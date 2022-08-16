@@ -1,4 +1,9 @@
 pipeline {
+  environment {
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+    DOCKER_IMAGE = 'kykil/spring'
+  }
+
   agent {
     kubernetes {
       yaml '''
@@ -44,9 +49,22 @@ pipeline {
     stage('Build-Docker-Image') {
       steps {
         container('docker') {
-          sh 'docker build -t kykil/spring:latest .'
+          sh '''
+            docker build -t ${DOCKER_IMAGE}:latest .
+          '''
+        }
+      }
+    }
+
+    stage('Push-Docker-Image') {
+      steps {
+        container('docker') {
+          sh '''
+            echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+            docker push $DOCKER_IMAGE:latest
+           '''
         }
       }
     }
   }
-}
+}g
