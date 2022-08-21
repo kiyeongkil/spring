@@ -8,17 +8,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
-class MemberServiceTest {
+class MemberServiceIntegrationTest {
 
-    @Autowired
-    MemberService memberService;
-    @Autowired
-    MemberRepository memberRepository;
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
 
     @Test
     void 회원가입() {
@@ -46,16 +44,6 @@ class MemberServiceTest {
         //when
         memberService.join(member1);
         assertThrows(IllegalStateException.class, () -> memberService.join(member2));
-        //메시지 확인하려면
-        //IllegalStateException e = assertThrows(IllegalStateException.class, () -> memberService.join(member2));
-        //assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원.");
-//        try {
-//            memberService.join(member2);
-//            fail();
-//        } catch (IllegalStateException e) {
-//            assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원.");
-//        }
-
         //then
     }
 }
